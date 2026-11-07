@@ -159,3 +159,5 @@ Run the full suite of unit and integration tests:
 python3 -m unittest discover -s tests
 ```
 *(14 tests passing in 0.002s)*
+
+![VeloTrack hero section](docs/hero.png)
