@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VeloTrack — Intelligent Fleet & Delivery Route Optimization</title>
+  <meta name="description" content="Replace manual dispatch guesswork with real-time route optimization. VeloTrack cuts empty miles and fuel burn by 28% while hitting 99.4% delivery windows — purpose-built for logistics operations.">
+  
+  <!-- Inter Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+
+  <!-- Core Stylesheet -->
+  <link rel="stylesheet" href="/static/css/main.css">
+
+  <!-- Three.js 3D Library (CDN with fallback support) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <!-- Fuel Spillage Interactive Physics -->
+  <script src="/static/js/fuel-spill.js" defer></script>
+</head>
+<body>
+
+  <!-- ==========================================================================
+       Navigation Bar
+       ========================================================================== -->
+  <header class="navbar">
+    <div class="container">
+      <a href="#" class="brand-logo">
+        <div class="brand-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="3 11 22 2 13 21 11 13 3 11"/>
+          </svg>
+        </div>
+        <span>VeloTrack<span class="brand-dot">.</span></span>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="#problem" class="nav-link">The Problem</a></li>
+        <li><a href="#demo" class="nav-link">Product Demo</a></li>
+        <li><a href="#benefits" class="nav-link">Benefits</a></li>
+        <li><a href="#who-its-for" class="nav-link">Who It's For</a></li>
+        <li><a href="#calculator" class="nav-link">ROI Calculator</a></li>
+        <li><a href="#pricing" class="nav-link">Pricing</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <!-- Dark / Light Mode Toggle -->
+        <button id="theme-toggle-btn" class="theme-toggle-btn" aria-label="Toggle Theme" title="Toggle Theme">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+        </button>
+
+        <a href="#demo" class="btn btn-secondary btn-sm" style="display: none; @media(min-width: 600px){display:inline-flex;}">Dispatcher View</a>
+        <button class="btn btn-primary btn-sm open-demo-modal-btn">Book a Demo</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==========================================================================
+       Hero Section (Full-Viewport 3D Dusk City Scene)
+       ========================================================================== -->
+  <section class="hero-section" id="hero">
+    <!-- 3D WebGL Canvas Layer -->
+    <div class="hero-3d-canvas-container" id="hero-canvas-container">
+      <canvas id="hero-canvas"></canvas>
+    </div>
+
+    <!-- Soft Gradient & Vignette Overlay -->
+    <div class="hero-vignette"></div>
+
+    <!-- Hero Content Overlay -->
+    <div class="container" style="position: relative; z-index: 3;">
+      <div class="hero-content">
+        <div class="badge-tag">
+          <span class="badge-pulse"></span>
+          <span>Next-Gen Fleet Dispatch Engine</span>
+        </div>
+
+        <h1 class="hero-headline">
+          Smarter Routes.<br>Lower Costs.<br>Happier Drivers.
+        </h1>
+
+        <p class="hero-subheadline">
+          Replace manual routing guesswork with intelligent, real-time optimization. 
+          VeloTrack cuts fuel consumption, overtime, and empty miles by 28% while 
+          guaranteeing 99.4% delivery time windows — built for drivers, trusted by operations.
+        </p>
+
+        <div class="hero-cta-group">
+          <button class="btn btn-primary btn-lg open-demo-modal-btn">
+            <span>Book a Demo</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </button>
+          <a href="#demo" class="btn btn-secondary btn-lg">
+            <span>See How It Works</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+          </a>
+        </div>
+
+        <div class="hero-proof-row">
+          <div class="proof-item">
+            <span class="proof-metric proof-metric-amber">-28%</span>
+            <span class="proof-label">Fuel & Miles Waste</span>
+          </div>
+          <div class="proof-item">
+            <span class="proof-metric proof-metric-teal">99.4%</span>
+            <span class="proof-label">On-Time Windows</span>
+          </div>
+          <div class="proof-item">
+            <span class="proof-metric">+34%</span>
+            <span class="proof-label">Vehicle Capacity Fill</span>
+          </div>
+          <div class="proof-item">
+            <span class="proof-metric">&lt; 150ms</span>
+            <span class="proof-label">Re-Route Latency</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Interactive 3D Camera Controls -->
+    <div class="hero-scene-controls">
+      <span class="scene-control-label">Dusk 3D City:</span>
+      <button id="toggle-orbit-btn" class="scene-control-btn active" title="Toggle camera rotation">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        Pause Orbit
+      </button>
+      <button id="reset-camera-btn" class="scene-control-btn" title="Reset Camera Perspective">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 109-9 9.75 9.75 0 00-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+        Reset View
+      </button>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       Problem Section - The High Cost of Manual Planning
+       ========================================================================== -->
+  <section class="section-padding" id="problem">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-label">Operational Reality</span>
+        <h2 class="section-title">Manual Route Planning Costs You Thousands Every Shift</h2>
+        <p class="section-desc">
+          When dispatchers juggle spreadsheets, traffic apps, and driver messages by hand, 
+          fleets burn cash on unnecessary miles, missed customer windows, and frustrated drivers.
+        </p>
+      </div>
+
+      <div class="problem-grid">
+        <!-- Problem Card 1 with Interactive Fuel Spillage Physics -->
+        <div class="problem-card fuel-spill-zone" title="Move your cursor across this card to see fuel spillage effect">
+          <div class="fuel-spill-badge">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>
+            <span>Live Effect: Move Cursor to Spill Fuel</span>
+          </div>
+          <div class="problem-icon-wrapper">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 2v6h6"/><path d="M21 12A9 9 0 0 0 6 5.3L3 8"/><path d="M21 22v-6h-6"/><path d="M3 12a9 9 0 0 0 15 6.7l3-2.7"/></svg>
+          </div>
+          <span class="problem-metric-badge">+28% Empty Run & Diesel Burn</span>
+          <h3 class="problem-card-title">Backtracking & Idle Waste</h3>
+          <p class="problem-card-desc">
+            Manual sequencing ignores spatial clustering. Delivery vans criss-cross urban corridors repeatedly, burning excessive diesel and generating 42 deadhead km daily per vehicle.
+          </p>
+          <div class="problem-stat-box">
+            Typical Loss: <strong>₹18,500 / vehicle / month</strong> in unneeded fuel and maintenance wear.
+          </div>
+        </div>
+
+        <!-- Problem Card 2 -->
+        <div class="problem-card">
+          <div class="problem-icon-wrapper">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </div>
+          <span class="problem-metric-badge">18% Missed SLA Windows</span>
+          <h3 class="problem-card-title">Cascading Delay Traps</h3>
+          <p class="problem-card-desc">
+            A single 15-minute delay early in the morning wrecks the entire afternoon schedule. Dispatchers only discover failures after angry customers call operations.
+          </p>
+          <div class="problem-stat-box">
+            Operational Impact: <strong>Contract SLA penalties & client churn</strong>.
+          </div>
+        </div>
+
+        <!-- Problem Card 3 -->
+        <div class="problem-card">
+          <div class="problem-icon-wrapper">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+          </div>
+          <span class="problem-metric-badge">34% Unused Cubic Capacity</span>
+          <h3 class="problem-card-title">Imbalanced Loads & Overtime</h3>
+          <p class="problem-card-desc">
+            Without automated multi-stop bin packing, some vehicles roll half-empty while other drivers are overloaded and forced into expensive overtime to finish stops.
+          </p>
+          <div class="problem-stat-box">
+            Driver Retention: <strong>High driver churn</strong> caused by erratic schedules.
+          </div>
+        </div>
+      </div>
+
+      <!-- Problem vs Solution Contrast Banner -->
+      <div class="problem-contrast-banner">
+        <div class="contrast-text">
+          <span class="contrast-pill-bad">Manual Dispatch</span>
+          <span style="color: var(--text-secondary); font-size: 0.94rem;">Static morning plans that break down by 10:30 AM</span>
+        </div>
+        <div style="color: var(--accent-teal); font-weight: 700;">VS</div>
+        <div class="contrast-text">
+          <span class="contrast-pill-good">VeloTrack Autonomous</span>
+          <span style="color: var(--text-primary); font-size: 0.94rem;">Dynamic continuous re-optimization that adapts to live traffic in &lt;150ms</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       Solution / Product Demo (Interactive 3D Dashboard Mockup)
+       ========================================================================== -->
+  <section class="section-padding demo-section" id="demo">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-label">Interactive Dispatch Demo</span>
+        <h2 class="section-title">Mission Control for Delivery Operations</h2>
+        <p class="section-desc">
+          Test drive VeloTrack's dispatcher view. Tilt the 3D perspective with your mouse, 
+          inspect live vehicle capacity, and trigger a live road incident to see sub-second re-routing in action.
+        </p>
+      </div>
+
+      <!-- Demo Control Bar -->
+      <div class="demo-controls-bar">
+        <div class="demo-status-pill">
+          <span class="demo-pulse-live"></span>
+          <span>Live Telemetry Stream: 5 Vehicles Active · 0 Overtime Violations</span>
+        </div>
+
+        <div class="demo-actions">
+          <button id="simulate-traffic-btn" class="btn btn-secondary btn-sm">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+            Simulate Road Incident
+          </button>
+          <button id="reset-tilt-btn" class="btn btn-secondary btn-sm">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/></svg>
+            Reset 3D Tilt
+          </button>
+        </div>
+      </div>
+
+      <!-- Interactive 3D Tilt Wrapper -->
+      <div class="dashboard-viewport-wrapper" id="dashboard-viewport-wrapper">
+        <div class="dashboard-mockup-frame" id="dashboard-mockup-frame">
+          <div class="dashboard-layout">
+            
+            <!-- Left Panel: Active Fleet Vehicles -->
+            <div class="dashboard-sidebar">
+              <div class="sidebar-heading">
+                <span>Active Dispatch Queue</span>
+                <span style="color: var(--accent-teal);">5 Online</span>
+              </div>
+
+              <div class="vehicle-selector-item active" data-vehicle-id="VAN-04">
+                <div>
+                  <div class="vehicle-id">VAN-04 (E-Transit)</div>
+                  <div class="vehicle-driver">Marcus Vance · Stop 02 of 06</div>
+                </div>
+                <span class="vehicle-tag-on-time">On-Time</span>
+              </div>
+
+              <div class="vehicle-selector-item" data-vehicle-id="VAN-01">
+                <div>
+                  <div class="vehicle-id">VAN-01 (Sprinter 2500)</div>
+                  <div class="vehicle-driver">Elena Rostova · Stop 07 of 18</div>
+                </div>
+                <span class="vehicle-tag-on-time">-2m Ahead</span>
+              </div>
+
+              <div class="vehicle-selector-item" data-vehicle-id="TRK-09">
+                <div>
+                  <div class="vehicle-id">TRK-09 (Freightliner M2)</div>
+                  <div class="vehicle-driver">Dave Kincaid · Stop 04 of 09</div>
+                </div>
+                <span class="vehicle-tag-on-time">On-Time</span>
+              </div>
+
+              <div class="vehicle-selector-item" data-vehicle-id="VAN-07">
+                <div>
+                  <div class="vehicle-id">VAN-07 (Connect EV)</div>
+                  <div class="vehicle-driver">Samira Khan · Stop 12 of 15</div>
+                </div>
+                <span class="vehicle-tag-on-time">-3m Ahead</span>
+              </div>
+
+              <!-- Quick Stop Detail -->
+              <div style="margin-top: auto; padding: 12px; background: rgba(0,0,0,0.3); border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);">
+                <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); margin-bottom: 4px;">Current Selected Stop</div>
+                <div style="font-size: 0.88rem; font-weight: 700; color: var(--text-primary);">Pacific Bioscience Labs</div>
+                <div style="font-size: 0.78rem; color: var(--text-secondary);">1200 4th St · Window: 14:45 - 15:30</div>
+                <div style="font-size: 0.76rem; color: var(--accent-teal); margin-top: 4px;">Cargo: 8 Boxes · Proof: Photo + Barcode</div>
+              </div>
+            </div>
+
+            <!-- Center: Live 3D Route Map -->
+            <div class="dashboard-center">
+              <div class="route-canvas-container" id="route-canvas-container">
+                <canvas id="route-canvas"></canvas>
+
+                <!-- HUD Overlays -->
+                <div class="route-overlay-hud">
+                  <div class="route-hud-title" id="route-hud-vehicle">VAN-04 · Live Route</div>
+                  <div class="route-hud-value" id="route-hud-delay">0 min delay (On-Time)</div>
+                  <div style="font-size: 0.74rem; color: var(--text-muted);">Route Efficiency: 98.4% · 56.1 Total Miles</div>
+                </div>
+
+                <div class="route-legend-hud">
+                  <div class="legend-item">
+                    <span class="legend-line-optimized"></span>
+                    <span>VeloTrack Optimized Path</span>
+                  </div>
+                  <div class="legend-item">
+                    <span class="legend-line-traffic"></span>
+                    <span>Traffic Incident Zone</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Real-time Incident Notification Banner (Dynamic) -->
+              <div id="demo-incident-alert" style="display: none; padding: 10px 16px; background: rgba(244, 63, 94, 0.12); border-top: 1px solid rgba(244, 63, 94, 0.3); color: #fecdd3; font-size: 0.84rem; justify-content: space-between; align-items: center;">
+              </div>
+            </div>
+
+            <!-- Right Panel: Capacity Gauges & Driver Shift Timeline -->
+            <div class="dashboard-right-panel">
+              <div class="sidebar-heading">
+                <span>Vehicle Load & Telematics</span>
+                <span style="color: var(--accent-emerald);">Optimal</span>
+              </div>
+
+              <div class="capacity-group">
+                <div class="capacity-bar-item">
+                  <div class="capacity-header">
+                    <span class="capacity-title">Cargo Volume</span>
+                    <span class="capacity-value">86.4% (420 / 487 cu.ft)</span>
+                  </div>
+                  <div class="progress-track">
+                    <div class="progress-fill progress-fill-teal" style="width: 86.4%;"></div>
+                  </div>
+                </div>
+
+                <div class="capacity-bar-item">
+                  <div class="capacity-header">
+                    <span class="capacity-title">Payload Weight</span>
+                    <span class="capacity-value">78.4% (2,980 / 3,800 lbs)</span>
+                  </div>
+                  <div class="progress-track">
+                    <div class="progress-fill progress-fill-amber" style="width: 78.4%;"></div>
+                  </div>
+                </div>
+
+                <div class="capacity-bar-item">
+                  <div class="capacity-header">
+                    <span class="capacity-title">EV Battery Range</span>
+                    <span class="capacity-value">68% (92 mi remaining)</span>
+                  </div>
+                  <div class="progress-track">
+                    <div class="progress-fill progress-fill-emerald" style="width: 68%;"></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Driver Shift Timeline -->
+              <div>
+                <div class="sidebar-heading">
+                  <span>Driver Shift Timeline</span>
+                  <span style="font-family: var(--font-mono); font-size: 0.75rem;">08:00 - 16:45</span>
+                </div>
+
+                <div class="timeline-list">
+                  <div class="timeline-event depot">
+                    <span class="timeline-time">08:00</span>
+                    <span class="timeline-desc">Cross-dock load & pre-trip inspection</span>
+                  </div>
+                  <div class="timeline-event">
+                    <span class="timeline-time">08:30</span>
+                    <span class="timeline-desc">Morning Route: Stops 01-12 (Zone A)</span>
+                  </div>
+                  <div class="timeline-event break">
+                    <span class="timeline-time">11:45</span>
+                    <span class="timeline-desc">Mandated 45-min Rest & Meal Break</span>
+                  </div>
+                  <div class="timeline-event">
+                    <span class="timeline-time">12:30</span>
+                    <span class="timeline-desc">Afternoon Route: Stops 13-28 (Zone B)</span>
+                  </div>
+                  <div class="timeline-event depot">
+                    <span class="timeline-time">16:15</span>
+                    <span class="timeline-desc">Depot return, post-trip inspection</span>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       Benefits Section - 3 Clean Columns with Metrics & 3D Hover
+       ========================================================================== -->
+  <section class="section-padding" id="benefits">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-label">Auditable Operational Impact</span>
+        <h2 class="section-title">Engineered for Measurable Bottom-Line Results</h2>
+        <p class="section-desc">
+          No vague AI promises. Real logistics operators choose VeloTrack because 
+          every optimized stop directly cuts fuel burn, driver overtime, and delivery SLA failures.
+        </p>
+      </div>
+
+      <div class="benefits-grid">
+        <!-- Benefit 1 with Fuel Spill interaction -->
+        <div class="benefit-card fuel-spill-zone" title="Move cursor here to see fuel spill physics">
+          <div class="fuel-spill-badge" style="margin-bottom: 12px;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>
+            <span>Fuel Spill Effect</span>
+          </div>
+          <div class="benefit-icon-canvas-box">
+            <canvas id="icon-fuel-canvas"></canvas>
+          </div>
+          <div class="benefit-stat-large benefit-stat-teal">-28%</div>
+          <h3 class="benefit-card-title">Fuel & Mileage Reduction</h3>
+          <p class="benefit-card-desc">
+            Autonomous multi-depot clustering eliminates deadhead kilometers and senseless criss-crossing. Commercial fleets save an average of 42 km and 8.7 litres of diesel per vehicle every shift.
+          </p>
+          <div class="benefit-metric-compare">
+            <span>Manual: 140 km/day</span>
+            <strong style="color: var(--accent-teal);">VeloTrack: 100.8 km/day</strong>
+          </div>
+        </div>
+
+        <!-- Benefit 2 -->
+        <div class="benefit-card">
+          <div class="benefit-icon-canvas-box">
+            <canvas id="icon-time-canvas"></canvas>
+          </div>
+          <div class="benefit-stat-large benefit-stat-amber">99.4%</div>
+          <h3 class="benefit-card-title">On-Time Window Compliance</h3>
+          <p class="benefit-card-desc">
+            VeloTrack models real curb access times, freight elevator delays, and historical traffic patterns so your delivery windows are realistic, not theoretical wishes.
+          </p>
+          <div class="benefit-metric-compare">
+            <span>Manual: 82.4% on-time</span>
+            <strong style="color: var(--accent-amber);">VeloTrack: 99.4% on-time</strong>
+          </div>
+        </div>
+
+        <!-- Benefit 3 -->
+        <div class="benefit-card">
+          <div class="benefit-icon-canvas-box">
+            <canvas id="icon-capacity-canvas"></canvas>
+          </div>
+          <div class="benefit-stat-large benefit-stat-emerald">+34%</div>
+          <h3 class="benefit-card-title">Vehicle Capacity Utilization</h3>
+          <p class="benefit-card-desc">
+            3D volumetric bin packing respects axle weight limits, temperature compartments (chilled vs dry), and delivery order so your vans depart safely at maximum payload.
+          </p>
+          <div class="benefit-metric-compare">
+            <span>Manual: 62% fill rate</span>
+            <strong style="color: var(--accent-emerald);">VeloTrack: 86.4% fill rate</strong>
+          </div>
+        </div>
+      </div>
+
+      <!-- Driver Experience Feature Strip -->
+      <div class="benefit-driver-feature">
+        <div class="driver-feature-content">
+          <div style="font-size: 0.78rem; text-transform: uppercase; font-weight: 700; color: var(--accent-amber); margin-bottom: 6px;">
+            Driver Retention Focus
+          </div>
+          <h3 class="driver-feature-title">High-Quality Routes Drivers Actually Like Using</h3>
+          <p class="driver-feature-desc">
+            Most routing software creates chaotic sequences with stressful left turns across six lanes of traffic. 
+            VeloTrack prioritizes right-hand turns, easy curbside parking access, and realistic stop buffers. 
+            Drivers finish shifts on time without rushing, directly reducing fleet driver turnover.
+          </p>
+        </div>
+        <button class="btn btn-secondary open-demo-modal-btn">Inspect Driver Mobile App</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       Who It's For - 4 Industry Segments
+       ========================================================================== -->
+  <section class="section-padding" id="who-its-for" style="background: var(--bg-secondary);">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-label">Tailored For Your Operations</span>
+        <h2 class="section-title">Built for High-Velocity Commercial Fleets</h2>
+        <p class="section-desc">
+          Whether you manage 12 parcel vans or 1,200 multi-temperature distribution trucks, 
+          VeloTrack adapts to your dispatch constraints without costly custom engineering.
+        </p>
+      </div>
+
+      <div class="who-grid">
+        <!-- Segment 1 -->
+        <div class="who-card">
+          <span class="who-badge">3PL & Regional Carriers</span>
+          <h3 class="who-title">Logistics & Freight 3PLs</h3>
+          <p class="who-desc">
+            Multi-depot line hauls, cross-dock transfers, dynamic hub sorting, and strict corporate SLA penalty avoidance.
+          </p>
+          <div class="who-tag-list">
+            <span class="who-tag">Cross-Docking</span>
+            <span class="who-tag">Contract SLAs</span>
+            <span class="who-tag">EDI / API Ingest</span>
+          </div>
+        </div>
+
+        <!-- Segment 2 -->
+        <div class="who-card">
+          <span class="who-badge">Food & Beverage</span>
+          <h3 class="who-title">Distributors & Wholesalers</h3>
+          <p class="who-desc">
+            Multi-compartment temperature constraints (ambient, chilled, frozen), tight morning receiver dock windows.
+          </p>
+          <div class="who-tag-list">
+            <span class="who-tag">Reefer Zones</span>
+            <span class="who-tag">Curb Restrictions</span>
+            <span class="who-tag">Weight Balances</span>
+          </div>
+        </div>
+
+        <!-- Segment 3 -->
+        <div class="who-card">
+          <span class="who-badge">E-Commerce & Retail</span>
+          <h3 class="who-title">Same-Day / Next-Day Parcel</h3>
+          <p class="who-desc">
+            Sub-second dynamic order injection, high residential stop densities, proof-of-delivery photos, and recipient SMS tracking.
+          </p>
+          <div class="who-tag-list">
+            <span class="who-tag">Live Order Injection</span>
+            <span class="who-tag">Photo POD</span>
+            <span class="who-tag">Customer ETA SMS</span>
+          </div>
+        </div>
+
+        <!-- Segment 4 -->
+        <div class="who-card">
+          <span class="who-badge">Field Services</span>
+          <h3 class="who-title">HVAC, Telecom & Maintenance</h3>
+          <p class="who-desc">
+            Matching required technician certifications and truck spare parts inventory against dynamic emergency work orders.
+          </p>
+          <div class="who-tag-list">
+            <span class="who-tag">Skill Matching</span>
+            <span class="who-tag">Parts Inventory</span>
+            <span class="who-tag">Variable Service Time</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       Interactive Fleet ROI & Cost Calculator (Rupees)
+       ========================================================================== -->
+  <section class="section-padding calculator-section" id="calculator">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-label">Calculate Your Bottom Line</span>
+        <h2 class="section-title">See Exact Rupee Savings for Your Fleet</h2>
+        <p class="section-desc">
+          Drag the sliders below to match your fleet size and operating metrics. 
+          Our Python engine computes your net savings based on audited commercial benchmarks.
+        </p>
+      </div>
+
+      <div class="calc-grid">
+        <!-- Inputs Pane -->
+        <div class="calc-inputs-pane">
+          <div class="calc-slider-group">
+            <div class="slider-label-row">
+              <span>Fleet Size (Vehicles)</span>
+              <span class="slider-value-display" id="calc-fleet-val">25 vehicles</span>
+            </div>
+            <input type="range" min="3" max="150" value="25" step="1" class="calc-range-slider" id="calc-fleet-size">
+          </div>
+
+          <div class="calc-slider-group">
+            <div class="slider-label-row">
+              <span>Average Daily Distance per Vehicle</span>
+              <span class="slider-value-display" id="calc-miles-val">140 km / day</span>
+            </div>
+            <input type="range" min="40" max="300" value="140" step="5" class="calc-range-slider" id="calc-miles-day">
+          </div>
+
+          <div class="calc-slider-group">
+            <div class="slider-label-row">
+              <span>Fuel Cost (Diesel per Litre)</span>
+              <span class="slider-value-display" id="calc-fuel-val">₹94.80 / L</span>
+            </div>
+            <input type="range" min="70.0" max="130.0" value="94.80" step="0.5" class="calc-range-slider" id="calc-fuel-cost">
+          </div>
+
+          <div class="calc-slider-group">
+            <div class="slider-label-row">
+              <span>Driver Base Wage (Hourly Equivalent)</span>
+              <span class="slider-value-display" id="calc-wage-val">₹185.00 / hr</span>
+            </div>
+            <input type="range" min="80.00" max="450.00" value="185.00" step="5.0" class="calc-range-slider" id="calc-driver-wage">
+          </div>
+        </div>
+
+        <!-- Live Results Pane -->
+        <div class="calc-results-pane">
+          <div class="results-header">
+            <span style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent-teal);">
+              Projected Net Annual Savings
+            </span>
+            <div class="results-big-stat" id="roi-total-savings">₹18,45,200</div>
+            <div style="font-size: 0.9rem; color: var(--text-secondary); margin-top: 4px;" id="roi-monthly-savings">
+              ₹1,53,760 / month net operational savings
+            </div>
+          </div>
+
+          <div class="results-breakdown-grid">
+            <div class="breakdown-box">
+              <div class="breakdown-label">Fuel Saved (Annual)</div>
+              <div class="breakdown-val" id="roi-fuel-saved">₹6,45,800</div>
+            </div>
+            <div class="breakdown-box">
+              <div class="breakdown-label">Overtime Hours Cut</div>
+              <div class="breakdown-val" id="roi-overtime-saved">552 hrs</div>
+            </div>
+            <div class="breakdown-box">
+              <div class="breakdown-label">CO2 Emissions Avoided</div>
+              <div class="breakdown-val" id="roi-co2-saved">54.2 tons</div>
+            </div>
+            <div class="breakdown-box">
+              <div class="breakdown-label">Platform Payback</div>
+              <div class="breakdown-val" id="roi-payback-days">21 days</div>
+            </div>
+          </div>
+
+          <button class="btn btn-primary btn-lg open-demo-modal-btn" style="width: 100%;">
+            Schedule Route Audit for This Fleet
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       Pricing Overview Section
+       ========================================================================== -->
+  <section class="section-padding" id="pricing">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-label">Transparent Pricing</span>
+        <h2 class="section-title">Predictable Pricing That Scales With Your Fleet</h2>
+        <p class="section-desc">
+          Choose per-vehicle subscriptions for steady fleets, per-delivery for variable e-commerce volume, 
+          or enterprise contracts with custom SLA and dedicated routing clusters.
+        </p>
+      </div>
+
+      <!-- Billing Frequency Toggle -->
+      <div class="pricing-toggle-wrap">
+        <span>Billed Monthly</span>
+        <div class="switch-track" id="pricing-billing-switch">
+          <div class="switch-thumb"></div>
+        </div>
+        <span>Billed Annually</span>
+        <span class="pricing-discount-badge">Save 20%</span>
+      </div>
+
+      <div class="pricing-cards-grid">
+        <!-- Tier 1: Per-Vehicle -->
+        <div class="pricing-card featured">
+          <span class="featured-top-badge">Most Popular for Fleets</span>
+          <h3 class="pricing-tier-name">Per-Vehicle Fleet</h3>
+          <p class="pricing-tier-desc">Full dynamic routing automation, live dispatcher mission control, and turn-by-turn driver app.</p>
+          
+          <div class="pricing-rate-wrap">
+            <span class="rate-amount" id="price-vehicle-amt">₹3,499</span>
+            <span class="rate-unit" id="price-vehicle-unit">/ vehicle / mo</span>
+          </div>
+
+          <ul class="pricing-features-list">
+            <li class="pricing-feature-item">
+              <svg class="feature-check-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Unlimited stops & sub-second re-routing</span>
+            </li>
+            <li class="pricing-feature-item">
+              <svg class="feature-check-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Multi-compartment & vehicle capacity constraints</span>
+            </li>
+            <li class="pricing-feature-item">
+              <svg class="feature-check-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Driver iOS/Android app with right-turn bias</span>
+            </li>
+            <li class="pricing-feature-item">
+              <svg class="feature-check-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Real-time GPS telematics & geofence arrival</span>
+            </li>
+            <li class="pricing-feature-item">
+              <svg class="feature-check-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Proof-of-delivery (photo, signature, OTP & barcode)</span>
+            </li>
+            <li class="pricing-feature-item">
+              <svg class="feature-check-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Standard 99.9% uptime SLA</span>
+            </li>
+          </ul>
+
+          <button class="btn btn-primary open-demo-modal-btn">Start 14-Day Route Audit</button>
+        </div>
+
+        <!-- Tier 2: Per-Delivery -->
+        <div class="pricing-card">
+          <h3 class="pricing-tier-name">Per-Delivery Flex</h3>
+          <p class="pricing-tier-desc">Zero monthly fixed commitments. Pay strictly as your delivery order volume scales.</p>
+          
+          <div class="pricing-rate-wrap">
+            <span class="rate-amount" id="price-delivery-amt">₹6.50</span>
+            <span class="rate-unit">/ completed delivery stop</span>
+          </div>
+
+          <ul class="pricing-features-list">
+            <li class="pricing-feature-item">
+              <svg class="feature-check-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Zero vehicle minimums or contracts</span>
+            </li>
+            <li class="pricing-feature-item">
+              <svg class="feature-check-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>High-concurrency REST & Webhook APIs</span>
+            </li>
+            <li class="pricing-feature-item">
+              <svg class="feature-check-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Automated live customer SMS / tracking links</span>
+            </li>
+            <li class="pricing-feature-item">
+              <svg class="feature-check-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Autonomous order cancellation re-dispatch</span>
+            </li>
+            <li class="pricing-feature-item">
+              <svg class="feature-check-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Developer sandbox environment</span>
+            </li>
+          </ul>
+
+          <button class="btn btn-secondary open-demo-modal-btn">Get API Sandbox Keys</button>
+        </div>
+
+        <!-- Tier 3: Enterprise Dedicated -->
+        <div class="pricing-card">
+          <h3 class="pricing-tier-name">Enterprise Custom</h3>
+          <p class="pricing-tier-desc">Dedicated routing clusters, on-premise enclaves, and deep ERP/TMS integrations.</p>
+          
+          <div class="pricing-rate-wrap">
+            <span class="rate-amount">Custom</span>
+            <span class="rate-unit">fleet SLA contract</span>
+          </div>
+
+          <ul class="pricing-features-list">
+            <li class="pricing-feature-item">
+              <svg class="feature-check-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Dedicated routing cluster worker nodes</span>
+            </li>
+            <li class="pricing-feature-item">
+              <svg class="feature-check-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Native ERP connectors (SAP, Oracle, Blue Yonder, Samsara)</span>
+            </li>
+            <li class="pricing-feature-item">
+              <svg class="feature-check-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Hazardous material & heavy freight constraint engines</span>
+            </li>
+            <li class="pricing-feature-item">
+              <svg class="feature-check-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Custom union driver break & shift rules</span>
+            </li>
+            <li class="pricing-feature-item">
+              <svg class="feature-check-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Dedicated 24/7/365 operations escalation desk</span>
+            </li>
+          </ul>
+
+          <button class="btn btn-secondary open-demo-modal-btn">Speak With Logistics Engineers</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       Final CTA Section (Calm 3D Night Fleet Yard Scene)
+       ========================================================================== -->
+  <section class="final-cta-section" id="final-cta">
+    <!-- 3D Fleet Yard at Night Canvas Layer -->
+    <div class="yard-3d-canvas-container" id="yard-canvas-container">
+      <canvas id="yard-canvas"></canvas>
+    </div>
+
+    <!-- Vignette -->
+    <div class="final-cta-vignette"></div>
+
+    <div class="container" style="position: relative; z-index: 3;">
+      <div class="final-cta-card">
+        <div style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent-amber); margin-bottom: 8px;">
+          Quiet Operational Confidence
+        </div>
+        <h2 class="cta-headline">Ready to Cut 28% Off Your Fleet Running Costs?</h2>
+        <p class="cta-subheadline">
+          Upload your last 30 days of route logs. We will run an automated route audit 
+          and show you exactly where your dispatchers are losing miles and fuel.
+        </p>
+
+        <!-- Direct Lead Capture Form -->
+        <form class="demo-lead-form" id="yard-demo-form">
+          <div class="form-row">
+            <input type="text" name="name" class="form-input" placeholder="Your Name" required>
+            <input type="email" name="email" class="form-input" placeholder="Work Email" required>
+          </div>
+          <div class="form-row">
+            <input type="text" name="company" class="form-input" placeholder="Company / Fleet Name" required>
+            <select name="fleet_size" class="form-select">
+              <option value="5-15 vehicles">5 - 15 Vehicles</option>
+              <option value="16-40 vehicles" selected>16 - 40 Vehicles</option>
+              <option value="41-100 vehicles">41 - 100 Vehicles</option>
+              <option value="100+ vehicles">100+ Commercial Fleet</option>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-amber btn-lg" style="width: 100%;">
+            <span>Schedule My Free Fleet Route Audit</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+          <div class="form-micro-guarantee">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+            <span>No credit card required. Includes 14-day free trial on your active vehicles.</span>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       Interactive Demo Modal Dialog
+       ========================================================================== -->
+  <div class="modal-overlay" id="demo-modal">
+    <div class="modal-content">
+      <button class="modal-close-btn" id="close-modal-btn" aria-label="Close modal">&times;</button>
+      
+      <div style="font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent-teal); margin-bottom: 6px;">
+        VeloTrack Operations Audit
+      </div>
+      <h3 style="font-size: 1.45rem; font-weight: 800; color: var(--text-primary); margin-bottom: 10px;">
+        Book a Live 1-on-1 Fleet Demo
+      </h3>
+      <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 24px; line-height: 1.5;">
+        Meet with an operational logistics engineer. We will review your current routing workflows, 
+        dispatch pain points, and benchmark your potential fuel savings.
+      </p>
+
+      <form class="demo-lead-form" id="modal-demo-form">
+        <div class="form-row">
+          <input type="text" name="name" class="form-input" placeholder="Full Name" required>
+          <input type="email" name="email" class="form-input" placeholder="Work Email" required>
+        </div>
+        <div class="form-row">
+          <input type="text" name="company" class="form-input" placeholder="Company Name" required>
+          <input type="tel" name="phone" class="form-input" placeholder="Phone Number (Optional)">
+        </div>
+        <div class="form-row">
+          <select name="fleet_type" class="form-select">
+            <option value="Logistics & Delivery">Logistics & 3PL</option>
+            <option value="Food & Beverage">Food & Beverage Distribution</option>
+            <option value="E-Commerce Last-Mile">E-Commerce Last-Mile</option>
+            <option value="Field Services">Field Service / Maintenance</option>
+          </select>
+          <select name="fleet_size" class="form-select">
+            <option value="5-15 vehicles">5 - 15 Vehicles</option>
+            <option value="16-40 vehicles" selected>16 - 40 Vehicles</option>
+            <option value="41-100 vehicles">41 - 100 Vehicles</option>
+            <option value="100+ vehicles">100+ Enterprise Fleet</option>
+          </select>
+        </div>
+        <button type="submit" class="btn btn-primary btn-lg" style="width: 100%; margin-top: 8px;">
+          Confirm Demo Booking
+        </button>
+        <div class="form-micro-guarantee">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+          <span>Guaranteed response within 2 business hours. SOC-2 Type II Certified.</span>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       Footer
+       ========================================================================== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <div class="brand-logo">
+            <div class="brand-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
+            </div>
+            <span>VeloTrack<span class="brand-dot">.</span></span>
+          </div>
+          <p class="footer-brand-desc">
+            Intelligent fleet dispatch and real-time delivery optimization. 
+            Reducing operational fuel burn and driver overtime for commercial fleets across North America and Europe.
+          </p>
+          <div style="margin-top: 14px; font-family: var(--font-mono); font-size: 0.76rem; color: var(--accent-teal);">
+            Engineered with Pure Python 3.14 & WebGL
+          </div>
+        </div>
+
+        <div>
+          <h4 class="footer-col-title">Platform</h4>
+          <ul class="footer-link-list">
+            <li><a href="#demo">Route Optimizer</a></li>
+            <li><a href="#demo">Dispatcher Mission Control</a></li>
+            <li><a href="#benefits">Driver Turn-by-Turn App</a></li>
+            <li><a href="#demo">Capacity & Bin Packing</a></li>
+            <li><a href="#calculator">Fleet ROI Engine</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="footer-col-title">Integrations</h4>
+          <ul class="footer-link-list">
+            <li><a href="#who-its-for">Samsara Telematics</a></li>
+            <li><a href="#who-its-for">Geotab Fleet Sync</a></li>
+            <li><a href="#who-its-for">SAP Logistics Hub</a></li>
+            <li><a href="#who-its-for">Oracle Transportation</a></li>
+            <li><a href="#who-its-for">Shopify & WooCommerce</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="footer-col-title">Security & Trust</h4>
+          <ul class="footer-link-list">
+            <li><a href="#">SOC 2 Type II Certified</a></li>
+            <li><a href="#">DOT HOS Compliance</a></li>
+            <li><a href="#">System Status: 99.98%</a></li>
+            <li><a href="#">Privacy & GDPR</a></li>
+            <li><a href="#">Developer API Docs</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div>&copy; 2026 VeloTrack Systems Inc. All rights reserved. Built for logistics professionals.</div>
+        <div style="display: flex; gap: 20px;">
+          <a href="#">Terms of Service</a>
+          <a href="#">Privacy Policy</a>
+          <a href="#">Security Overview</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Application Scripts -->
+  <script src="/static/js/api-client.js"></script>
+  <script src="/static/js/scene-hero.js"></script>
+  <script src="/static/js/scene-dashboard.js"></script>
+  <script src="/static/js/scene-yard.js"></script>
+  <script src="/static/js/scene-icons.js"></script>
+  <script src="/static/js/main.js"></script>
+</body>
+</html>
